@@ -138,9 +138,9 @@ export const deleteById = async (req, res) => {
     const userExists = await User.findById(id);
     if (!userExists) return res.status(404).json({ error: "Usuario no encontrado" });
 
-    await Order.deleteMany({ userId: id });
-    await Cart.deleteMany({ userId: id });
-    await Address.deleteMany({ userId: id });
+    // await Order.deleteMany({ userId: id });
+    // await Cart.deleteMany({ userId: id });
+    // await Address.deleteMany({ userId: id });
 
     await User.findByIdAndDelete(id);
     res.status(204).json();
