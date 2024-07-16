@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 import { createAccessToken } from "../services/user.services.js";
+import { verifyGoogleToken } from '../services/google.services.js';
 
 export const getAll = async (req, res) => {
   try {
@@ -208,4 +209,42 @@ export const updatePassword = async (req, res) => {
   }
 };
 
+export const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const googleUser = await verifyGoogleToken(token);
 
+    if (!googleUser) {
+      return res.status(401).json({ error: "Token inválido" });
+    }
+
+    let user = await User.findOne({ email: googleUser.email });
+
+    if (!user) {
+      // Si el usuario no existe, crear uno nuevo
+      user = new User({
+        fullName: googleUser.name,
+        email: googleUser.email,
+        userName: googleUser.email.split('@')[0],
+        password: '', // No se requiere contraseña para usuarios de Google
+        googleId: googleUser.sub,
+      });
+      await user.save();
+    }
+
+    const accessToken = await createAccessToken({ id: user._id });
+
+    res.status(200).json({
+      token: accessToken,
+      id: user._id,
+      name: user.fullName,
+      userName: user.userName,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

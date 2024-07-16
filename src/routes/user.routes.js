@@ -9,7 +9,8 @@ import {
   deleteById,
   admin,
   verifyToken,
-  updatePassword
+  updatePassword,
+  googleLogin
 } from '../controllers/user.controllers.js';
 import userRequired from '../validators/token.validations.js';
 import userValidations from '../validators/user.validations.js';
@@ -22,6 +23,8 @@ router.get("/getAll", userRequired, getAll);
 router.get("/getById/:id", userRequired, getById);
 
 router.post("/login", login);
+
+router.post('/google-login', googleLogin);
 
 router.post("/logout", logout);
 
