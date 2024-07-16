@@ -1,12 +1,11 @@
 import { OAuth2Client } from 'google-auth-library';
-import dotenv from 'dotenv';
-dotenv.config();
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const client = new OAuth2Client('793959150532-n8h7ji8lere1c2ok9q262nul33tmpftf.apps.googleusercontent.com');
 
 export async function verifyGoogleToken(token) {
   const ticket = await client.verifyIdToken({
     idToken: token,
-    audience: process.env.GOOGLE_CLIENT_ID,
+    audience: '793959150532-n8h7ji8lere1c2ok9q262nul33tmpftf.apps.googleusercontent.com',
   });
   const payload = ticket.getPayload();
   return payload;
