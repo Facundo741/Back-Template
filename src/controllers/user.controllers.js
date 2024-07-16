@@ -9,6 +9,7 @@ const TOKEN_SECRET = process.env.TOKEN_SECRET;
 import { createAccessToken } from "../services/user.services.js";
 import { verifyGoogleToken } from '../services/google.services.js';
 
+
 export const getAll = async (req, res) => {
   try {
     const response = await User.find();
@@ -215,7 +216,7 @@ export const googleLogin = async (req, res) => {
     const googleUser = await verifyGoogleToken(token);
 
     if (!googleUser) {
-      return res.status(401).json({ error: "Token inválido" });
+      return res.status(401).json({ error: "Invalid token" });
     }
 
     let user = await User.findOne({ email: googleUser.email });
@@ -245,6 +246,7 @@ export const googleLogin = async (req, res) => {
       updatedAt: user.updatedAt,
     });
   } catch (error) {
+    console.error('Error during Google login:', error);
     res.status(500).json({ error: error.message });
   }
 };
